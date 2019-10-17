@@ -6,6 +6,8 @@ An API for the Bookmarks client supporting GET, POST, DELETE.
 
 Install the node dependencies `npm install`
 
+Seed the database `psql -U dunder_mifflin -d bookmarks -f ./seeds/seed.bookmarks.sql`
+
 ## Endpoints
 
 `GET /bookmarks` returns a list of bookmarks
@@ -23,3 +25,5 @@ Start the application `npm start`
 Start nodemon for the application `npm run dev`
 
 Run the tests `npm test`
+
+Run migrations `npm run migrate`
