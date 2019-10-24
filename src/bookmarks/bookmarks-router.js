@@ -1,5 +1,5 @@
+const path = require('path');
 const express = require('express');
-// const uuid = require('uuid/v4');
 const logger = require('../logger');
 const xss = require('xss');
 const BookmarksService = require('../bookmarks-service')
@@ -29,9 +29,8 @@ bookmarksRouter
     .post(bodyParser, (req, res, next) => {
         const { title, url, description="", rating } = req.body;
         const ratingNum = parseFloat(rating);
-        // const id = uuid();
+
         const newBookmark = {
-            // id,
             title,
             url,
             description,
@@ -74,7 +73,7 @@ bookmarksRouter
         .then(bookmark => {
             res
                 .status(201)
-                .location(`/bookmarks/${bookmark.id}`)
+                .location(path.posix.join(req.originalUrl + `/${bookmark.id}`))
                 .json({
                     id: bookmark.id,
                     title: xss(bookmark.title),
@@ -123,6 +122,29 @@ bookmarksRouter
                 logger.info(`Bookmark with id ${req.params.bookmark_id} deleted.`);
             })
             .catch(next)
-    });
+    })
+    .patch(bodyParser, (req, res, next) => {
+        const { title, url, description, rating } = req.body;
+        const bookmarkToUpdate = { title, url, description, rating };
+        const numberOfValues = Object.values(bookmarkToUpdate).filter(Boolean).length;
+
+        if (numberOfValues === 0) {
+            return res.status(400).json({
+                error: {
+                    message: `Request body must contain either 'title', 'url', 'description', or 'rating'` 
+                }
+            });
+        }
+
+        BookmarksService.updateBookmark(
+            req.app.get('db'),
+            req.params.bookmark_id,
+            bookmarkToUpdate
+        )
+        .then(numRowsAffected => {
+            res.status(204).end()
+        })
+        .catch(next)
+    })
 
 module.exports = bookmarksRouter;
