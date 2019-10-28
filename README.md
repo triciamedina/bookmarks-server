@@ -1,6 +1,6 @@
 # Bookmarks API
 
-An API for the Bookmarks client supporting GET, POST, DELETE.
+An API for the Bookmarks client supporting GET, POST, DELETE, PATCH.
 
 ## Set up
 
@@ -17,6 +17,8 @@ Seed the database `psql -U dunder_mifflin -d bookmarks -f ./seeds/seed.bookmarks
 `POST /bookmarks` accepts a JSON object representing a bookmark and adds it to the list of bookmarks after validation
 
 `DELETE /bookmarks/:id` deletes the bookmark with the given ID
+
+`PATCH /bookmarks/:id` updates a bookmark with the given ID
 
 ## Scripts
 
